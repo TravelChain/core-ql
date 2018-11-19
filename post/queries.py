@@ -14,8 +14,8 @@ class Geometry(graphene.InputObjectType):
 class PostOrderingEnum(graphene.Enum):
     created_ASC = '-created'
     created_DESC = 'created'
-    total_payout_value_ASC = '-total_payout_value'
-    total_payout_value_DESC = 'total_payout_value'
+    # total_payout_value_ASC = '-total_payout_value'
+    # total_payout_value_DESC = 'total_payout_value'
 
 
 class MetaFilterInput(graphene.InputObjectType):
@@ -34,21 +34,20 @@ class PostQuery(graphene.ObjectType):
     comment = graphene.Field(Comment, identifier=graphene.String())
 
     def resolve_posts(self, info, args):
-        qs = CommentModel.objects(depth=0, removed=False)
+        qs = CommentModel.objects()
 
         meta = args.get('meta', {})
-
         if 'orderBy' in args:
             qs = qs.order_by(args['orderBy'])
 
-        tags = meta.get('tags')
-        app = meta.get('app')
+        #tags = meta.get('tags')
+        #app = meta.get('app')
 
-        if tags:
-            qs = qs.filter(json_metadata__tags__all=tags)
+        # if tags:
+        #     qs = qs.filter(json_metadata__tags__all=tags)
 
-        if app:
-            qs = qs.filter(json_metadata__app=app)
+        # if app:
+        #     qs = qs.filter(json_metadata__app=app)
 
         return qs_ab_filter(qs, args)
 
@@ -57,14 +56,14 @@ class PostQuery(graphene.ObjectType):
 
         return CommentModel.objects(author=author, permlink=permlink).first()
 
-    def resolve_comments(self, info, args):
-        qs = CommentModel.objects(depth__ne=0, removed=False)
+    # def resolve_comments(self, info, args):
+    #     qs = CommentModel.objects(depth__ne=0, removed=False)
 
-        return qs_ab_filter(qs, args)
+    #     return qs_ab_filter(qs, args)
 
-    def resolve_comment(self, context, identifier=None):
-        author, permlink = identifier[1:].split('/')
+    # def resolve_comment(self, context, identifier=None):
+    #     author, permlink = identifier[1:].split('/')
 
-        return CommentModel.objects(depth__ne=0,
-                                    author=author,
-                                    permlink=permlink).first()
+    #     return CommentModel.objects(depth__ne=0,
+    #                                 author=author,
+    #                                 permlink=permlink).first()

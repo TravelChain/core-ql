@@ -63,18 +63,19 @@ class Vote(MongoengineObjectType):
 
 class Post(MongoengineObjectType):
     author = graphene.Field(Account)
-    meta = graphene.Field(PostMeta)
-    thumb = graphene.String(description='First image in post body')
-    total_pending_payout = graphene.Float()
-    votes = CustomMongoengineConnectionField(Vote)
+    #meta = graphene.Field(PostMeta)
+    #thumb = graphene.String(description='First image in post body')
+    # total_pending_payout = graphene.Float()
+    # votes = CustomMongoengineConnectionField(Vote)
     body = graphene.String(linkify_images=graphene.Boolean())
-    is_voted = graphene.Boolean(
-        description='Check whether the account was voted for this post',
-        account=graphene.String(),
-    )
-    comments = graphene.List('post.types.Post',
-                             first=graphene.Int(),
-                             last=graphene.Int())
+    
+    # is_voted = graphene.Boolean(
+    #     description='Check whether the account was voted for this post',
+    #     account=graphene.String(),
+    # )
+    # comments = graphene.List('post.types.Post',
+    #                          first=graphene.Int(),
+    #                          last=graphene.Int())
 
     class Meta:
         description = '''
@@ -85,19 +86,19 @@ class Post(MongoengineObjectType):
         model = CommentModel
         interfaces = (Node,)
 
-    def resolve_total_pending_payout(self, info):
-        dgp = DGPModel.objects.first()
+    # def resolve_total_pending_payout(self, info):
+    #     dgp = DGPModel.objects.first()
 
-        tpp = self['vote_rshares']
-        tpp *= dgp.total_reward_fund_steem_value
-        tpp /= dgp.total_reward_shares2
+    #     tpp = self['vote_rshares']
+    #     tpp *= dgp.total_reward_fund_steem_value
+    #     tpp /= dgp.total_reward_shares2
 
-        return tpp
+    #     return tpp
 
-    def resolve_is_voted(self, info, account):
-        vote = VoteModel.objects(comment=self.id, voter=account).first()
+    # def resolve_is_voted(self, info, account):
+    #     vote = VoteModel.objects(comment=self.id, voter=account).first()
 
-        return vote is not None
+    #     return vote is not None
 
     def resolve_comments(self, info, first=None, last=None):
         # TODO Написать простой пагинатор для комментов
@@ -113,20 +114,20 @@ class Post(MongoengineObjectType):
     def resolve_image(self, info):
         return self.json_metadata['image'][0]
 
-    def resolve_meta(self, info):
-        return self.json_metadata or {}
+    # def resolve_meta(self, info):
+    #     return self.json_metadata or {}
 
-    def resolve_thumb(self, info):
-        return find_images(self.body, first=True)
+    # def resolve_thumb(self, info):
+    #     return find_images(self.body, first=True)
 
-    def resolve_author(self, info):
-        return AccountModel.objects(name=self.author).first()
+    # def resolve_author(self, info):
+    #     return AccountModel.objects(name=self.author).first()
 
-    def resolve_votes(self, info, args):
-        return VoteModel.objects(permlink=self.permlink, author=self.author)
+    # def resolve_votes(self, info, args):
+    #     return VoteModel.objects(permlink=self.permlink, author=self.author)
 
     def resolve_body(self, info, linkify_images=False):
-        format = prepare_json(self.json_metadata).get('format', 'html')
+        #format = prepare_json(self.json_metadata).get('format', 'html')
 
         if linkify_images:
             return utils.linkify_images(self.body, format)

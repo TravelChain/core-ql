@@ -25,7 +25,7 @@ class CustomMongoengineConnectionField(MongoengineConnectionField):
     @classmethod
     def connection_resolver(cls, resolver, connection, model, root, info, **args):
         qs = resolver(root, info, args)
-
+        
         qs = qs.filter(**{
             key: value
             for key, value in args.copy().items()
