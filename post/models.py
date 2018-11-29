@@ -24,6 +24,7 @@ class VoteModel(DynamicDocument):
             'voter',
             'comment',
             'permlink',
+            'parent_permlink',
             'last_update'
         ],
 
@@ -39,6 +40,7 @@ class CommentModel(DynamicDocument):
     created = DateTimeField()
     last_update = DateTimeField()
     permlink = StringField()
+    parent_permlink = StringField()
     body = StringField()
     title = StringField()
     meta = StringField()
@@ -49,7 +51,9 @@ class CommentModel(DynamicDocument):
 
         'indexes': [
             'author',
+            'parent_author'
             'permlink',
+            'parent_permlink',
             'created',
             'host',
             'goal_id',

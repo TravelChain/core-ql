@@ -62,7 +62,7 @@ class Vote(MongoengineObjectType):
 
 
 class Post(MongoengineObjectType):
-    author = graphene.Field(Account)
+    author = graphene.String()
     #meta = graphene.Field(PostMeta)
     #thumb = graphene.String(description='First image in post body')
     # total_pending_payout = graphene.Float()
