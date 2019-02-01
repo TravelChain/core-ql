@@ -43,10 +43,13 @@ def find_images(body, first=False):
 
 def find_comments(post):
     comments = []
-
-    for comment in CommentModel.objects(root_comment=post.id):
-        if comment.root_comment == comment.id:
-            continue
+    print(post.parent_permlink)
+    # TODO: разобраться с выдачей комментариев
+    
+    for comment in CommentModel.objects(parent_permlink=post.permlink):
+        
+        # if comment.ownid == post.ownid:
+        #     continue
 
         comments.append(comment)
 

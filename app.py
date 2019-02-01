@@ -21,7 +21,7 @@ CORS(app)
 Sentry(app)
 
 connect(
-    os.getenv('GOLOS_DB_NAME', 'blog_platform'),
+    os.getenv('GOLOS_DB_NAME', 'blogs'),
     username=os.getenv('MONGO_USER'),
     password=os.getenv('MONGO_PASSWORD'),
     host=os.getenv('MONGO_HOST', 'localhost'),

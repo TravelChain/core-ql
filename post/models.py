@@ -35,8 +35,11 @@ class VoteModel(DynamicDocument):
 
 class CommentModel(DynamicDocument):
     host = StringField()
+    ownid = StringField()
+    is_goal = BooleanField()
     goal_id = IntField()
     author = StringField()
+    parent_author = StringField()
     created = DateTimeField()
     last_update = DateTimeField()
     permlink = StringField()
@@ -44,19 +47,21 @@ class CommentModel(DynamicDocument):
     body = StringField()
     title = StringField()
     meta = StringField()
-
+    
     meta = {
         'collection': 'posts',
         'ordering': ['-created'],
 
         'indexes': [
             'author',
-            'parent_author'
+            'ownid',
+            'parent_author',
             'permlink',
             'parent_permlink',
             'created',
             'host',
             'goal_id',
+            'is_goal'
         ],
 
         'auto_create_index': True,

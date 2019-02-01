@@ -73,9 +73,10 @@ class Post(MongoengineObjectType):
     #     description='Check whether the account was voted for this post',
     #     account=graphene.String(),
     # )
-    # comments = graphene.List('post.types.Post',
-    #                          first=graphene.Int(),
-    #                          last=graphene.Int())
+    
+    comments = graphene.List('post.types.Post',
+                             first=graphene.Int(),
+                             last=graphene.Int())
 
     class Meta:
         description = '''

@@ -39,7 +39,7 @@ class PostQuery(graphene.ObjectType):
         meta = args.get('meta', {})
         if 'orderBy' in args:
             qs = qs.order_by(args['orderBy'])
-
+            
         #tags = meta.get('tags')
         #app = meta.get('app')
 
