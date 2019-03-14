@@ -2,6 +2,7 @@ import re
 import json
 
 from post.models import CommentModel
+from levels.models import LevelModel
 
 
 def prepare_json(json_sting):
@@ -40,6 +41,17 @@ def find_images(body, first=False):
 #
 #     return node
 
+
+def count_users(user):
+    count = LevelModel.objects(referer=user.username)
+        
+    return count
+
+
+def find_users(user):
+    level = LevelModel.objects(referer=user.username)
+        
+    return level
 
 def find_comments(post):
     comments = []

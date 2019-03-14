@@ -1,6 +1,5 @@
-graphene-mongo
+graphene-mongo==0.1.19
 flask
-flask_graphql
 mongoengine
 mongomock
 flask-cors
