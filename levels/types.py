@@ -54,8 +54,7 @@ class Level(MongoengineObjectType):
     # rec_summ_black = graphene.Float(host=graphene.String(), level = graphene.Int())
     # rec_summ_white = graphene.Float(host=graphene.String(), level = graphene.Int())
 
-    def resolve_gdp(self, info, host):
-
+    # def resolve_gdp(self, info, host):
 
     def resolve_info(self, info):
         return prepare_json(self.meta)
