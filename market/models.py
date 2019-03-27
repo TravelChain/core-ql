@@ -6,6 +6,7 @@ from mongoengine.fields import (
 )
   
 class MarketModel(DynamicDocument):
+    blockchain = StringField()
     host = StringField()
     date = DateTimeField()
     base = FloatField()
@@ -27,6 +28,7 @@ class MarketModel(DynamicDocument):
         'ordering': ['-date'],
 
         'indexes': [
+            'blockchain',
             'host',
             'date',
             'is1min',

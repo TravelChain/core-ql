@@ -33,20 +33,21 @@ class Host(MongoengineObjectType):
 class Level(MongoengineObjectType):
 
     levels = graphene.List('levels.types.Level',
+                             blockchain=graphene.String(required=True),
                              first=graphene.Int(),
                              last=graphene.Int())
 
     balances = graphene.List('levels.types.Balance',
-                             host = graphene.String())
+                             blockchain=graphene.String(required=True),
+                             host = graphene.String(required=True))
 
-    exp_summ_black = graphene.Float(host=graphene.String(), level = graphene.Int())
-    exp_summ_white = graphene.Float(host=graphene.String(), level = graphene.Int())
+    exp_summ_black = graphene.Float(blockchain=graphene.String(required=True),host=graphene.String(required=True), level = graphene.Int(required=True))
+    exp_summ_white = graphene.Float(blockchain=graphene.String(required=True),host=graphene.String(required=True), level = graphene.Int(required=True))
 
-    total_recieved = graphene.Float(host=graphene.String(), level = graphene.Int())
+    total_recieved = graphene.Float(blockchain=graphene.String(required=True),host=graphene.String(required=True), level = graphene.Int(required=True))
     
-    count = graphene.Int()
-
     info = GenericScalar()
+    count = graphene.Int()
 
     gdp = graphene.Float()
 
@@ -56,12 +57,16 @@ class Level(MongoengineObjectType):
 
     # def resolve_gdp(self, info, host):
 
+    def resolve_count(self, info):
+        return 1
+        
     def resolve_info(self, info):
         return prepare_json(self.meta)
 
-    def resolve_exp_summ_black(self, info, host, level):
-        
-        balance = BalanceModel.objects(username = self.username, host = host, pool_color = "black", withdrawed = False)
+    def resolve_exp_summ_black(self, info, blockchain, host, level):
+        print("blockchain: ", self.blockchain)
+
+        balance = BalanceModel.objects(username = self.username, blockchain=blockchain, host = host, pool_color = "black", withdrawed = False)
         summ = 0
         host = HostModel.objects(username = host)
         lev = host[0]['levels'][level - 1]
@@ -73,8 +78,9 @@ class Level(MongoengineObjectType):
 
         return summ
 
-    def resolve_exp_summ_white(self, info, host, level):
-        balance = BalanceModel.objects(username = self.username, host = host, pool_color = "white", withdrawed = False)
+    def resolve_exp_summ_white(self, info, blockchain, host, level):
+        print("blockchain:", self.blockchain)
+        balance = BalanceModel.objects(username = self.username, blockchain = blockchain, host = host, pool_color = "white", withdrawed = False)
         summ = 0
         host = HostModel.objects(username = host)
         lev = host[0]['levels'][level - 1]
@@ -87,8 +93,8 @@ class Level(MongoengineObjectType):
         return summ
     
 
-    def resolve_total_recieved(self, info, host, level):
-        balance = BalanceModel.objects(username = self.username, host = host, win = True, withdrawed = True)
+    def resolve_total_recieved(self, info, blockchain,host, level):
+        balance = BalanceModel.objects(username = self.username, blockchain=blockchain,host = host, win = True, withdrawed = True)
         summ = 0
         host = HostModel.objects(username = host)
         lev = host[0]['levels'][level - 1]
@@ -112,13 +118,14 @@ class Level(MongoengineObjectType):
 
     # level = CustomMongoengineConnectionField(Level)
 
-    def resolve_levels(self, info, first=None, last=None):
+    def resolve_levels(self, info, blockchain, first=None, last=None):
         # TODO Написать простой пагинатор для комментов
-        username = find_users(self)
+        username = find_users(self, blockchain)
 
         return username
     
     def resolve_balances(self, info, host):
+
         balance = BalanceModel.objects(username = self.username, host  = host)
         # for i, bal in enumerate(balance):
         #     print(i)

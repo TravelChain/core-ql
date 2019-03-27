@@ -33,7 +33,8 @@ class VoteModel(DynamicDocument):
     }
 
 
-class CommentModel(DynamicDocument):
+class CommentModel(DynamicDocument):   
+    blockchain = StringField()
     host = StringField()
     ownid = StringField()
     is_goal = BooleanField()
@@ -53,6 +54,7 @@ class CommentModel(DynamicDocument):
         'ordering': ['-created'],
 
         'indexes': [
+            'blockchain',
             'author',
             'ownid',
             'parent_author',

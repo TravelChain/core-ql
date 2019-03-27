@@ -8,7 +8,7 @@ from mongoengine.fields import (
 class HostModel(DynamicDocument):
     username = StringField()
     levels = DictField()
-
+    blockchain = StringField()
     meta = {
         'collection': 'hosts',
         'ordering': ['-date'],
@@ -16,6 +16,7 @@ class HostModel(DynamicDocument):
         'indexes': [
             'username',
             'levels',
+            'blockchain',
         ],
 
         'auto_create_index': True,
@@ -28,11 +29,14 @@ class BalanceModel(DynamicDocument):
     host = StringField()
     pool_color = StringField()
     withdrawed = BooleanField()
+    blockchain = StringField()
+
     meta = {
         'collection': 'balances',
         'ordering': ['-date'],
 
         'indexes': [
+            'blockchain',
             'ref_amount',
             'win',
             'host',
@@ -46,6 +50,7 @@ class BalanceModel(DynamicDocument):
     }
 
 class LevelModel(DynamicDocument):
+    blockchain = StringField()
     username = StringField()
     referer = StringField()
     meta = StringField()
@@ -54,6 +59,7 @@ class LevelModel(DynamicDocument):
         'ordering': ['-date'],
 
         'indexes': [
+            'blockchain',
             'username',
             'referer',
         ],
