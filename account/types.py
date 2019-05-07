@@ -8,7 +8,13 @@ from graphene.types.generic import GenericScalar
 
 from account.models import (
     AccountModel,
-    AccountAuthorityModel
+)
+from levels.models import (
+    PowerModel, LevelModel
+)
+
+from badges.models import (
+    BadgeModel
 )
 
 from common.utils import prepare_json
@@ -41,6 +47,9 @@ class AccountProfile(graphene.ObjectType):
     profile_image = graphene.String()
     website = graphene.String()
     cover_image = graphene.String()
+    
+    def resolve_meta(self, info):
+        return prepare_json(self.meta)
 
     def resolve_cover_image(self, info):
         with suppress(KeyError):
@@ -57,11 +66,7 @@ class AccountProfile(graphene.ObjectType):
 
 class AccountMeta(graphene.ObjectType):
     profile = graphene.Field(AccountProfile)
-    mapala_profile = graphene.Field(MapalaProfile)
-
-    def resolve_mapala_profile(self, info):
-        return self.get('mapalaProfile', {})
-
+    
     def resolve_profile(self, info):
         return self.get('profile', {})
 
@@ -70,21 +75,71 @@ class Account(MongoengineObjectType):
     meta = graphene.Field(AccountMeta)
     json_metadata = GenericScalar()
 
+    powers = graphene.List('levels.types.Power',
+                             first=graphene.Int(),
+                             last=graphene.Int(),
+                             host=graphene.String(),
+                             minpower = graphene.Int()
+                             )
+
+    badges = graphene.List('badges.types.Badge', first=graphene.Int(),
+                             last=graphene.Int(),
+                             host=graphene.String()
+                             )
+
+    avatar = graphene.String()
+
+    nickname = graphene.String()
+
+
+    def resolve_nickname(self, info):
+        user = LevelModel.objects(username=self.username, blockchain = self.blockchain).first()
+        meta = prepare_json(user.meta)
+        
+        if 'nickname' in meta:
+            return meta['nickname']
+        else:
+            return ""   
+
+    def resolve_avatar(self, info):
+        user = LevelModel.objects(username=self.username, blockchain = self.blockchain).first()
+        meta = prepare_json(user.meta)
+        
+        if 'img' in meta:
+            return meta['img']
+        else:
+            return "/ava.png"    
+
+
+    def resolve_badges(self, info, host):
+        if (host):
+            qs = BadgeModel.objects(blockchain = self.blockchain, username = self.username, host = host)
+        else:
+            qs = BadgeModel.objects(blockchain = self.blockchain, username = self.username)
+        #TODO find badges and construct
+        return qs;
+
+    
+    def resolve_powers(self, info, host):
+        
+        if (host):
+            qs = PowerModel.objects(blockchain=self.blockchain, username = self.username, host=host)
+        else:
+            qs = PowerModel.objects(blockchain=self.blockchain, username = self.username)
+            
+        return qs;
+
+
     def resolve_json_metadata(self, info):
-        return prepare_json(self.json_metadata)
+        User  = LevelModel.objects(username = self.username, blockchain = self.blockchain)
+        return prepare_json(self.meta)
 
     class Meta:
         model = AccountModel
         interfaces = (Node,)
 
     def resolve_meta(self, info):
-        if isinstance(self.json_metadata, BaseDict):
-            return self.json_metadata
+        if isinstance(self.meta, BaseDict):
+            return self.meta
         else:
             return {}
-
-
-class AccountAuthority(MongoengineObjectType):
-    class Meta:
-        model = AccountAuthorityModel
-        interfaces = (Node,)

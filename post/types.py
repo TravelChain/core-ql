@@ -8,6 +8,7 @@ from account.models import AccountModel
 
 from post.models import CommentModel, VoteModel
 from stats.models import DGPModel
+from levels.models import LevelModel
 
 from common.fields import CustomMongoengineConnectionField
 from common.utils import find_comments, find_images, prepare_json
@@ -15,35 +16,37 @@ from post import utils
 
 
 class PostMeta(graphene.ObjectType):
-    image = GenericScalar(first=graphene.Boolean())
+    # image = GenericScalar(first=graphene.Boolean())
     app = GenericScalar()
-    location = GenericScalar()
+    # location = GenericScalar()
     tags = GenericScalar()
-    format = graphene.String()
-    json_metadata = GenericScalar()
+    # format = graphene.String()
+    meta = GenericScalar()
 
-    def resolve_json_metadata(self, info):
-        return prepare_json(self.json_metadata)
+    def resolve_meta(self, info):
+        return prepare_json(self)
 
-    def resolve_format(self, info):
-        return self.get('format', None)
+    # def resolve_format(self, info):
+    #     return self.get('format', None)
 
     def resolve_tags(self, info):
-        return self.get('tags', [])
+        meta = prepare_json(self)
+        return meta.get('tags', [])
 
-    def resolve_image(self, info, first=False):
-        images = self.get('image', [])
+    # def resolve_image(self, info, first=False):
+    #     images = self.get('image', [])
 
-        if images:
-            return images[0] if first else images
+    #     if images:
+    #         return images[0] if first else images
 
-        return []
+    #     return []
 
     def resolve_app(self, info):
-        return self.get('app', 'undefined')
+        meta = prepare_json(self)
+        return meta.get('app', 'undefined')
 
-    def resolve_location(self, info):
-        return self.get('location', {})
+    # def resolve_location(self, info):
+    #     return self.get('location', {})
 
 
 # Отдельный апп
@@ -63,7 +66,7 @@ class Vote(MongoengineObjectType):
 
 class Post(MongoengineObjectType):
     author = graphene.String()
-    #meta = graphene.Field(PostMeta)
+    meta = graphene.Field(PostMeta)
     #thumb = graphene.String(description='First image in post body')
     # total_pending_payout = graphene.Float()
     # votes = CustomMongoengineConnectionField(Vote)
@@ -73,7 +76,9 @@ class Post(MongoengineObjectType):
     #     description='Check whether the account was voted for this post',
     #     account=graphene.String(),
     # )
-    
+
+    nickname = graphene.String()
+    avatar = graphene.String()
     comments = graphene.List('post.types.Post',
                              first=graphene.Int(),
                              last=graphene.Int())
@@ -115,11 +120,31 @@ class Post(MongoengineObjectType):
     def resolve_image(self, info):
         return self.json_metadata['image'][0]
 
-    # def resolve_meta(self, info):
-    #     return self.json_metadata or {}
+    # def resolve_json(self, info):
+    #     return self.json
 
     # def resolve_thumb(self, info):
     #     return find_images(self.body, first=True)
+
+    def resolve_nickname(self, info):
+        user = LevelModel.objects(username=self.author, blockchain = self.blockchain).first()
+        meta = prepare_json(user.meta)
+        
+        if 'nickname' in meta:
+            return meta['nickname']
+        else:
+            return ""    
+
+    def resolve_avatar(self, info):
+        user = LevelModel.objects(username=self.author, blockchain = self.blockchain).first()
+        meta = prepare_json(user.meta)
+        
+        if 'img' in meta:
+            return meta['img']
+        else:
+            return "/ava.png"    
+
+
 
     # def resolve_author(self, info):
     #     return AccountModel.objects(name=self.author).first()
@@ -131,7 +156,7 @@ class Post(MongoengineObjectType):
         #format = prepare_json(self.json_metadata).get('format', 'html')
 
         if linkify_images:
-            return utils.linkify_images(self.body, format)
+            return utils.linkify_images(self.body)
         else:
             return self.body
 

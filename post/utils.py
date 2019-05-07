@@ -39,10 +39,11 @@ def qs_ab_filter(qs, args):
     return qs
 
 
-def linkify_images(body, format=None):
-    if format == 'html':
-        body = html.unescape(body)
+def linkify_images(body):
+    # if format == 'html':
+        # body = html.unescape(body)
 
+    format = "markdown"
     # Proxyfi all images
     body = re.sub(PROXIFY_REGEX, r'https://imgp.golos.io/0x0/\1', body)
 

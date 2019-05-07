@@ -5,6 +5,31 @@ from mongoengine.fields import (
     BooleanField
 )
  
+class PowerModel(DynamicDocument):
+    username = StringField()
+    host = StringField()
+    blockchain = StringField()
+    power = IntField()
+    staked = IntField()
+    delegated = IntField()
+    
+    meta = {
+        'collection': 'powers',
+        'ordering': ['-date'],
+
+        'indexes': [
+            'username',
+            'host',
+            'blockchain',
+            'power',
+        ],
+
+        'auto_create_index': True,
+        'index_background': True
+    }
+
+
+
 class HostModel(DynamicDocument):
     username = StringField()
     levels = DictField()

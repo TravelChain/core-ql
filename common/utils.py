@@ -47,6 +47,10 @@ def count_users(user):
         
     return count
 
+def find_user(user, blockchain):
+    level = LevelModel.objects(username=user.username, blockchain=blockchain)
+        
+    return level
 
 def find_users(user, blockchain):
     level = LevelModel.objects(referer=user.username, blockchain=blockchain)

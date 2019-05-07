@@ -35,10 +35,6 @@ class VoteModel(DynamicDocument):
 
 class CommentModel(DynamicDocument):   
     blockchain = StringField()
-    host = StringField()
-    ownid = StringField()
-    is_goal = BooleanField()
-    goal_id = IntField()
     author = StringField()
     parent_author = StringField()
     created = DateTimeField()
@@ -49,6 +45,8 @@ class CommentModel(DynamicDocument):
     title = StringField()
     meta = StringField()
     
+    json = DictField()
+
     meta = {
         'collection': 'posts',
         'ordering': ['-created'],
@@ -56,14 +54,12 @@ class CommentModel(DynamicDocument):
         'indexes': [
             'blockchain',
             'author',
-            'ownid',
             'parent_author',
             'permlink',
             'parent_permlink',
             'created',
-            'host',
-            'goal_id',
-            'is_goal'
+            'json.app',
+            'json.tags'
         ],
 
         'auto_create_index': True,

@@ -37,17 +37,18 @@ class PostQuery(graphene.ObjectType):
         qs = CommentModel.objects()
 
         meta = args.get('meta', {})
+
         if 'orderBy' in args:
             qs = qs.order_by(args['orderBy'])
             
-        #tags = meta.get('tags')
-        #app = meta.get('app')
+        tags = meta.get('tags')
+        app = meta.get('app')
 
-        # if tags:
-        #     qs = qs.filter(json_metadata__tags__all=tags)
+        if tags:
+            qs = qs.filter(json__tags__all=tags)
 
-        # if app:
-        #     qs = qs.filter(json_metadata__app=app)
+        if app:
+            qs = qs.filter(json__app=app)
 
         return qs_ab_filter(qs, args)
 
