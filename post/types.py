@@ -128,8 +128,11 @@ class Post(MongoengineObjectType):
 
     def resolve_nickname(self, info):
         user = LevelModel.objects(username=self.author, blockchain = self.blockchain).first()
-        meta = prepare_json(user.meta)
-        
+        if (user):
+            meta = prepare_json(user.meta)
+        else:
+            meta = {}
+                
         if 'nickname' in meta:
             return meta['nickname']
         else:
@@ -141,7 +144,7 @@ class Post(MongoengineObjectType):
             meta = prepare_json(user.meta)
         else: 
             meta = {}
-            
+
         if 'img' in meta:
             return meta['img']
         else:

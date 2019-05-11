@@ -127,7 +127,11 @@ class Level(MongoengineObjectType):
 
     def resolve_nickname(self, info):
         user = LevelModel.objects(username=self.username, blockchain = self.blockchain).first()
-        meta = prepare_json(user.meta)
+        if (user):
+            meta = prepare_json(user.meta)
+        else:
+            meta = {}
+        
         
         if 'nickname' in meta:
             return meta['nickname']
