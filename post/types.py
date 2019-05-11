@@ -137,8 +137,11 @@ class Post(MongoengineObjectType):
 
     def resolve_avatar(self, info):
         user = LevelModel.objects(username=self.author, blockchain = self.blockchain).first()
-        meta = prepare_json(user.meta)
-        
+        if (user):
+            meta = prepare_json(user.meta)
+        else: 
+            meta = {}
+            
         if 'img' in meta:
             return meta['img']
         else:

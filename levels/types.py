@@ -36,15 +36,17 @@ class Power(MongoengineObjectType):
     avatar = graphene.String()
 
 
+
     def resolve_avatar(self, info):
-        user = LevelModel.objects(username=self.username, blockchain = self.blockchain).first()
-        meta = prepare_json(user.meta)
-        
+        user = LevelModel.objects(username=self.author, blockchain = self.blockchain).first()
+        if (user):
+            meta = prepare_json(user.meta)
+        else: 
+            meta = {}
+            
         if 'img' in meta:
-            print("1")
             return meta['img']
         else:
-            print("2")
             return "/ava.png"    
 
 
