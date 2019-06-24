@@ -4,6 +4,130 @@ from mongoengine.fields import (
     DateTimeField, ObjectId, FloatField,
     BooleanField
 )
+
+class SpiralModel(DynamicDocument):
+    blockchain = StringField()
+    host = StringField()
+    ahost = StringField()
+    size_of_pool = IntField()
+    overlap = IntField()
+    profit_growth = IntField()
+    base_rate = IntField()
+    loss_percent = IntField()
+    pool_limit = IntField()
+    pool_timeout = IntField()
+    priority_seconds = IntField()
+
+    meta = {
+        'collection': 'spirals',
+        'ordering': ['_id'],
+
+        'indexes': [
+            'blockchain',
+            'host',
+            'ahost',
+            
+        ],
+
+        'auto_create_index': True,
+        'index_background': True
+    }
+  
+
+
+class SpiralModel(DynamicDocument):
+    blockchain = StringField()
+    host = StringField()
+    ahost = StringField()
+    size_of_pool = IntField()
+    overlap = IntField()
+    profit_growth = IntField()
+    base_rate = IntField()
+    loss_percent = IntField()
+    pool_limit = IntField()
+    pool_timeout = IntField()
+    priority_seconds = IntField()
+      
+    meta = {
+        'collection': 'spirals',
+        'ordering': ['_id'],
+
+        'indexes': [
+            'blockchain',
+            'host',
+            'ahost',
+            
+        ],
+
+        'auto_create_index': True,
+        'index_background': True
+    }
+
+
+class RatesModel(DynamicDocument):
+    blockchain = StringField()
+    pool_id = IntField()
+    host = StringField()
+    ahost = StringField()
+    total_quants = IntField()
+    buy_rate = IntField()
+    sell_rate = IntField()
+    client_income = StringField()
+    delta = StringField()
+    pool_cost = StringField()
+    total_in_box = StringField()
+    payment_to_wins = StringField()
+    payment_to_loss = StringField()
+    system_income = StringField()
+    live_balance_for_sale = StringField()
+
+    meta = {
+        'collection': 'rates',
+        'ordering': ['_id'],
+
+        'indexes': [
+            'blockchain',
+            'host',
+            'ahost',
+            'pool_id'
+            
+        ],
+
+        'auto_create_index': True,
+        'index_background': True
+    }
+  
+
+class CoreMarketModel(DynamicDocument):
+    blockchain = StringField()
+    host = StringField()
+    pool_id = IntField()
+    pool_num = IntField()
+    cycle_num = IntField()
+    color = StringField()
+    open = FloatField()
+    high = FloatField()
+    low = FloatField()
+    close = FloatField()
+    type = StringField()
+    timestamp = DateTimeField()
+    
+    meta = {
+        'collection': 'coremarkets',
+        'ordering': ['-cycle_num'],
+
+        'indexes': [
+            'blockchain',
+            'host',
+            'timestamp',
+            'type',
+            'cycle_num'
+    
+        ],
+
+        'auto_create_index': True,
+        'index_background': True
+    }
   
 class MarketModel(DynamicDocument):
     blockchain = StringField()

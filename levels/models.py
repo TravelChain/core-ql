@@ -34,14 +34,55 @@ class HostModel(DynamicDocument):
     username = StringField()
     levels = DictField()
     blockchain = StringField()
+    registered_at = DateTimeField()
+    architect = StringField()
+    hoperator = StringField()
+    consensus_percent = FloatField()
+    referral_percent = FloatField()
+    dac_mode = IntField()
+    dacs = DictField()
+    chosts = DictField()
+    ahost = StringField()
+    non_active_chost = BooleanField()
+    need_switch = BooleanField()
+    fhosts_mode = IntField()
+    fhosts = DictField()
+    title = StringField()
+    purpose = StringField()
+    total_shares = IntField()
+    quote_amount = StringField()
+    root_token_contract = StringField()
+    root_token = StringField()
+    symbol = StringField()
+    precision = IntField()
+    to_pay = IntField()
+    payed = BooleanField()
+    cycle_start_id = IntField()
+    current_pool_id = IntField()
+    current_cycle_num = IntField()
+    current_pool_num = IntField()
+    parameters_setted = BooleanField()
+    activated = BooleanField()
+    priority_flag = BooleanField()
+    meta = StringField()
+    app = StringField()
+
+
     meta = {
         'collection': 'hosts',
-        'ordering': ['-date'],
+        'ordering': ['-registered_at'],
 
         'indexes': [
             'username',
-            'levels',
             'blockchain',
+            'ahost',
+            'activated',
+            'payed',
+            'parameters_setted'
+            'priority_flag'
+            'need_switch',
+            'non_active_chost',
+            'app'
         ],
 
         'auto_create_index': True,

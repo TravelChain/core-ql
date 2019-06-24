@@ -9,6 +9,9 @@ from common.utils import find_users, count_users
 from levels.models import (
     LevelModel, BalanceModel, HostModel, PowerModel, 
 )
+from market.models import (
+    SpiralModel
+)
 from badges.models import (BadgeModel)
 from common.utils import prepare_json
 from common.types import GeometryObjectType
@@ -85,6 +88,34 @@ class Balance(MongoengineObjectType):
 
 
 class Host(MongoengineObjectType):
+
+    totalgrowth = graphene.Float()
+    roundgrowth = graphene.Float()
+    risk = graphene.Float()
+
+    def resolve_roundgrowth(self, info):
+        spiral = SpiralModel.objects(host=self.username, ahost=self.username).first()
+        growth = spiral.overlap / 100 - 100 
+        growth = round(growth, 2) 
+        return growth
+
+
+
+    def resolve_totalgrowth(self, info):
+        spiral = SpiralModel.objects(host=self.username, ahost=self.username).first()
+        growth = spiral.overlap / 100 - 100 
+
+        totalgrowth = spiral.pool_limit * growth / 2
+        totalgrowth = round(totalgrowth, 2)
+        return totalgrowth
+
+    def resolve_risk(self, info):
+        spiral = SpiralModel.objects(host = self.username, ahost=self.username).first()
+        risk = spiral.loss_percent / 10000 * 100 
+        risk = round(risk, 2)
+
+        return risk
+
 
     class Meta:
         model= HostModel

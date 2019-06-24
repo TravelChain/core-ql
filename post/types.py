@@ -132,7 +132,7 @@ class Post(MongoengineObjectType):
             meta = prepare_json(user.meta)
         else:
             meta = {}
-                
+
         if 'nickname' in meta:
             return meta['nickname']
         else:
@@ -158,7 +158,7 @@ class Post(MongoengineObjectType):
     # def resolve_votes(self, info, args):
     #     return VoteModel.objects(permlink=self.permlink, author=self.author)
 
-    def resolve_body(self, info, linkify_images=False):
+    def resolve_body(self, info, linkify_images=True):
         #format = prepare_json(self.json_metadata).get('format', 'html')
 
         if linkify_images:
